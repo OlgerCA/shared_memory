@@ -18,9 +18,9 @@ void shared_buffer_init(SharedBuffer* this, int queueSize, size_t bufferSize, ch
 
     int i;
     for (i = 0; i < bufferSize; i++) {
-        this->__mail[i].key = 0;
+        this->__mail[i].key = -1;
         this->__mail[i].is_termination_message = false;
-        this->__mail[i].producer_id = 0;
+        this->__mail[i].producer_id = -1;
     }
     msync(this, this->__bufferSize, MS_SYNC);
 }
