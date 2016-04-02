@@ -14,7 +14,7 @@ typedef struct {
     int __frontIndex;
     int __backIndex;
     bool __isActive;
-    Message __mail[0];
+    Message __mail[];
 } SharedBuffer;
 
 void shared_buffer_init(SharedBuffer* this, int queueSize, size_t bufferSize, char* semaphoreName);
