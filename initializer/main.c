@@ -11,7 +11,7 @@ int main (int argc, char *argv[])
     m.key = 10;
     message_print(&m);
 
-    // TODO initializer: get command-line arguments using optget: buffer (or file name) and queue size.
+    // TODO initializer: get command-line arguments: buffer (or file name) and queue size.
 
     // TODO initializer: create a new mapping file of size = (sizeof(SharedBuffer) - sizeof(Message*) + sizeof(Message) * queueSize). Use the provided file name.
 

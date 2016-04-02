@@ -11,7 +11,7 @@ int main (int argc, char *argv[])
     m.key = 10;
     message_print(&m);
 
-    // TODO producer: get command-line arguments using optget: buffer (or file name) and mean waiting time.
+    // TODO producer: get command-line arguments: buffer (or file name) and mean waiting time.
 
     // TODO producer: use mmap to get a pointer to a SharedBuffer using the provided file name
 

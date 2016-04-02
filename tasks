@@ -1,23 +1,23 @@
 common: add an appropriate time and date representation
 common: complete implementation of shared_buffer functions
-consumer: get command-line arguments using optget: buffer (or file name) and mean waiting time.
+consumer: get command-line arguments: buffer (or file name) and mean waiting time.
 consumer: use mmap to get a pointer to a SharedBuffer using the provided file name
 consumer: increase consumer counter inside SharedBuffer
 consumer: get semaphore instance using the provided name inside SharedBuffer
 consumer: read messages until a termination message is read or p_id % 5 = message_key, using the provided waiting time. Print to the console each time a new message is read.
 consumer: decrease consumer counter inside SharedBuffer and munmap
 consumer: print report
-finalizer: get command-line argument using optget: buffer (or file name)
+finalizer: get command-line argument: buffer (or file name)
 finalizer: use mmap to get a pointer to a SharedBuffer using the provided file name
 finalizer: call shared_buffer_set_inactive, and wait until there are no producers alive
 finalizer: send one finalization message for each consumer that is alive and wait until all are finished
 finalizer: munmap and release buffer (delete shared file)
-initializer: get command-line arguments using optget: buffer (or file name) and queue size.
+initializer: get command-line arguments: buffer (or file name) and queue size.
 initializer: create a new mapping file of size = (sizeof(SharedBuffer) - sizeof(Message*) + sizeof(Message) * queueSize). Use the provided file name.
 initializer: create a new named semaphore
 initializer: use mmap to get a pointer to a SharedBuffer using the provided file name
 initializer: initialize SharedBuffer and munmap
-producer: get command-line arguments using optget: buffer (or file name) and mean waiting time.
+producer: get command-line arguments buffer (or file name) and mean waiting time.
 producer: use mmap to get a pointer to a SharedBuffer using the provided file name
 producer: increase producers counter inside SharedBuffer
 producer: get semaphore instance using the provided name inside SharedBuffer

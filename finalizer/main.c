@@ -11,7 +11,7 @@ int main (int argc, char *argv[])
     m.key = 10;
     message_print(&m);
 
-    // TODO finalizer: get command-line argument using optget: buffer (or file name)
+    // TODO finalizer: get command-line argument: buffer (or file name)
 
     // TODO finalizer: use mmap to get a pointer to a SharedBuffer using the provided file name
 

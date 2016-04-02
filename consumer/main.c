@@ -12,7 +12,7 @@ int main (int argc, char *argv[])
     message_print(&m);
     return 0;
 
-    // TODO consumer: get command-line arguments using optget: buffer (or file name) and mean waiting time.
+    // TODO consumer: get command-line arguments: buffer (or file name) and mean waiting time.
 
     // TODO consumer: use mmap to get a pointer to a SharedBuffer using the provided file name
 
