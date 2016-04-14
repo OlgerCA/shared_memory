@@ -73,9 +73,6 @@ int main (int argc, char* argv[]) {
 	int id = shared_buffer_get_consumer_count(buffer);
 	for (; id > 0; id--) {
 		shared_buffer_put_stop(buffer, id);
-		if (sem == SEM_FAILED) {
-			perror("Error loading semaphore");
-		}
 	}
 
 	do {
