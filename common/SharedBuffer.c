@@ -93,7 +93,7 @@ void shared_buffer_put_message(SharedBuffer* this, int producerId, int key, bool
     msync(this, this->__bufferSize, MS_SYNC);
 
     this->__mail[this->__backIndex].producer_id = producerId;
-		this->__mail[this->__backIndex].key = key;
+    this->__mail[this->__backIndex].key = key;
     this->__mail[this->__backIndex].is_termination_message = isTerminationMessage;
 
     this->__backIndex++;
@@ -105,7 +105,7 @@ void shared_buffer_put_message(SharedBuffer* this, int producerId, int key, bool
 void shared_buffer_put_stop(SharedBuffer* this, int consumerId) {
     msync(this, this->__bufferSize, MS_SYNC);
 
-		this->__mail[this->__backIndex].key = consumerId % 5;
+    this->__mail[this->__backIndex].key = consumerId % 5;
     this->__mail[this->__backIndex].is_termination_message = true;
 
     this->__backIndex++;
@@ -135,6 +135,6 @@ void shared_buffer_close_file(int fileDesc) {
 void shared_buffer_unlink(SharedBuffer* this, int fileDesc, size_t mapSize) {
     if (this != MAP_FAILED) {
         munmap(this, mapSize);
-		}
-		close(fileDesc);
+    }
+    close(fileDesc);
 }
