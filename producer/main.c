@@ -1,9 +1,7 @@
 
 #include <stdio.h>
 #include <Message.h>
-#include <fcntl.h>
 #include <SharedBuffer.h>
-#include <sys/mman.h>
 #include <unistd.h>
 #include <math.h>
 #include <Semaphore.h>
@@ -60,7 +58,8 @@ int main (int argc, char *argv[])
         message.is_termination_message = 0;
         message.producer_id = producerId;
         message.key = rand() % 5;
-        message.dateTime = getDateTime();
+        message.readFlag = false;
+        time(&message.dateTime);
 
         //TODO: post message to queue
         semWaitTime += shared_buffer_put_message(buffer, message, semaphore);
@@ -69,29 +68,18 @@ int main (int argc, char *argv[])
         exp_rnd_wait = -log((double)rand() / (double)((unsigned)RAND_MAX + 1)) * mean;
         waitTime += exp_rnd_wait;
         sleep(exp_rnd_wait);
-
-        // TODO producer: print report
-        printf("Producer Summary:\n");
-        printf("\tProduce ID:%d\n", producerId);
-        printf("\tAccum wait time:%lf\n", waitTime);
-        printf("\tAccum wait time blocked:%lf\n", semWaitTime);
-        printf("\tetc...");
-
-
     }
 
     // TODO producer: decrease producers counter inside SharedBuffer and munmap
     shared_buffer_decrease_producer_count(buffer, semaphore);
 
-
+    // TODO producer: print report
+    printf("Producer Summary:\n");
+    printf("\tProducer ID:%d\n", producerId);
+    printf("\tMessages produced: %d\n", messagesProduced);
+    printf("\tAccum wait time:%lf\n", waitTime);
+    printf("\tAccum wait time blocked:%lf\n", semWaitTime);
+    printf("\tetc...");
 
     return 0;
-}
-
-char* getDateTime(){
-    char *dateTime = NULL;
-    time_t rawtime = NULL;
-    time(&rawtime);
-    dateTime = ctime(&rawtime);
-    return dateTime;
 }

@@ -33,7 +33,7 @@ int shared_buffer_get_consumer_count(SharedBuffer* this);
 
 double shared_buffer_put_message(SharedBuffer* this, Message message, sem_t *semaphore);
 void shared_buffer_put_stop(SharedBuffer* this, int consumerId);
-Message shared_buffer_get_message(SharedBuffer* this, sem_t *semaphore, int* messageIndex);
+Message shared_buffer_get_message(SharedBuffer* this, sem_t *semaphore);
 
 int shared_buffer_increase_consumer_count(SharedBuffer* this, sem_t *semaphore);
 int shared_buffer_decrease_consumer_count(SharedBuffer* this, sem_t *semaphore);
