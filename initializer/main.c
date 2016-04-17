@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <SharedBuffer.h>
+#include <Semaphore.h>
 
 int main (int argc, char *argv[]) {
 
@@ -44,10 +45,8 @@ int main (int argc, char *argv[]) {
     }
 
     // Creating a new named semaphore.
-    char* semaphore_name = "/shared_sem";
-    sem_t* semaphore = sem_open(semaphore_name, O_CREAT /*| O_EXCL*/, S_IRWXO, 0);
-    if (semaphore == SEM_FAILED) {
-        close(fd);
+    sem_t* semaphore = create_shared_semaphore(shared_semaphore);
+    if(!semaphore){
         perror("Error creating semaphore");
         return -1;
     }
@@ -59,20 +58,24 @@ int main (int argc, char *argv[]) {
     if (buffer == MAP_FAILED) {
         close(fd);
         sem_close(semaphore);
-        sem_unlink(semaphore_name);
+        sem_unlink(shared_semaphore);
         perror("Error mapping file");
         return -1;
     }
 
     // Initializing buffer.
-    shared_buffer_init(buffer, queue_size, map_size, semaphore_name);
+    shared_buffer_init(buffer, queue_size, map_size, shared_semaphore);
 
-    // Freeing resources.
-    munmap(buffer, map_size);
-    close(fd);
-    sem_close(semaphore);
-    // This line should be moved to finalizer process later.
-    sem_unlink(semaphore_name);
+    while(1){
+        sleep(60);
+    }
+
+//    // Freeing resources.
+//    munmap(buffer, map_size);
+//    close(fd);
+//    sem_close(semaphore);
+//    // This line should be moved to finalizer process later.
+//    sem_unlink(shared_semaphore);
 
     return 0;
 }

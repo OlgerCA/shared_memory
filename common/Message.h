@@ -9,7 +9,7 @@
 typedef struct {
     int producer_id;
     bool is_termination_message;
-    // TODO common: add an appropriate time and date representation
+    char* dateTime;
     int key;
 } Message;
 
