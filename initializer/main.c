@@ -66,9 +66,9 @@ int main (int argc, char *argv[]) {
     // Initializing buffer.
     shared_buffer_init(buffer, queue_size, map_size, shared_semaphore);
 
-    while(1){
-        sleep(60);
-    }
+    //while(1){
+    //    sleep(60);
+    //}
 
 //    // Freeing resources.
 //    munmap(buffer, map_size);

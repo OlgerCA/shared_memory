@@ -95,10 +95,6 @@ char* shared_buffer_get_semaphore_name(SharedBuffer* this) {
     return this->__semaphoreName;
 }
 /* ---------------------------------------------------------------- */
-sem_t* shared_buffer_open_semaphore(char* semaphoreName) {
-    return sem_open(semaphoreName, O_CREAT /*| O_EXCL*/, S_IRWXO, 0);
-}
-/* ---------------------------------------------------------------- */
 int shared_buffer_get_queue_size(SharedBuffer* this) {
     return this->__queueSize;
 }
@@ -159,18 +155,23 @@ double shared_buffer_put_message(SharedBuffer* this, Message message, sem_t *sem
     diff = clock() - start;
     msync(this, this->__bufferSize, MS_SYNC);
     int index;
+    bool successfulMessage = false;
 
     index = this->__messageCount % this->__queueSize;
 
     if(this->__mail[index].readFlag == true){
         this->__mail[index] = message;
         this->__messageCount++;
+        successfulMessage = true;
     }
 
     msync(this, this->__bufferSize, MS_SYNC);
 
     sem_post(semaphore);
-    printMessageAdded(this, index, message);
+    if(successfulMessage)
+        printMessageAdded(this, index, message);
+    else
+        printMessageDiscarted(this,message);
 
     return diff;
 }
@@ -212,7 +213,7 @@ Message shared_buffer_get_message(SharedBuffer *this, sem_t *semaphore) {
 
 /* ---------------------------------------------------------------- */
 void shared_buffer_set_inactive(SharedBuffer* this) {
-    this->__isActive = false;
+    this->__isActive = 0;
     msync(this, this->__bufferSize, MS_SYNC);
 }
 /* ---------------------------------------------------------------- */
@@ -238,6 +239,16 @@ void printMessageAdded(SharedBuffer *this, int index, Message message) {
     printf("\tLive Consumers: %d\n", this->__consumerCount);
     printf("\tMessage Info:\n");
     printf("\t\tKey: %d", message.key);
+    printf("\t\tProducer ID: %d", message.producer_id);
+    printf("\t\tDate Time: %s", ctime(&message.dateTime));
+}
+
+//TODO, check is we are actually going to discard a message if it has not been read
+void printMessageDiscarted(SharedBuffer *this,Message message) {
+    printf("Action: Message Dicarted:\n");
+    printf("\tMessage index: %d\n", index);
+    printf("\tLive Producers: %d\n", this->__producerCount);
+    printf("\tLive Consumers: %d\n", this->__consumerCount);
     printf("\t\tProducer ID: %d", message.producer_id);
     printf("\t\tDate Time: %s", ctime(&message.dateTime));
 }
