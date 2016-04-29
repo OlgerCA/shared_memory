@@ -13,8 +13,6 @@
 #include <fcntl.h>
 #include "Semaphore.h"
 
-#define SEM_NAME "/shared_sem"
-
 int main (int argc, char* argv[]) {
 	puts("This is the finalizer process.");
 	
@@ -55,21 +53,38 @@ int main (int argc, char* argv[]) {
 		return -1;
 	}
 
-	sem_t* sem = get_shared_semaphore(shared_semaphore);
-	if (sem == SEM_FAILED) {
+	sem_t* buffer_sem = get_shared_semaphore(buffer_sem_name);
+	if (buffer_sem == SEM_FAILED) {
 		perror("Error creating semaphore");
 		return -1;
 	}
 
-	sem_wait(sem);
+	sem_t* fill_sem = get_shared_semaphore(fill_sem_name);
+	if (fill_sem == SEM_FAILED) {
+		perror("Error creating semaphore");
+		return -1;
+	}
+
+	sem_t* empty_sem = get_shared_semaphore(empty_sem_name);
+	if (empty_sem == SEM_FAILED) {
+		perror("Error creating semaphore");
+		return -1;
+	}
+
+	sem_wait(buffer_sem);
 
 	// TODO finalizer: call shared_buffer_set_inactive, and wait until there are no producers alive
 	shared_buffer_set_inactive(buffer);
+    int post_mutex = 0;
+    for(; post_mutex < queue_size; post_mutex++){
+        sem_post(fill_sem);
+        sem_post(empty_sem);
+    }
 	
 	do {
-		sem_post(sem);
+		sem_post(buffer_sem);
 		sleep(2);
-		sem_wait(sem);
+		sem_wait(buffer_sem);
 	} while (
 		shared_buffer_get_producer_count(buffer) > 0
 	);
@@ -81,17 +96,23 @@ int main (int argc, char* argv[]) {
 	}
 
 	do {
-		sem_post(sem);
+		sem_post(buffer_sem);
 		sleep(2);
-		sem_wait(sem);
+		sem_wait(buffer_sem);
 	} while (
 		shared_buffer_get_consumer_count(buffer) > 0
 	);
 
+
+
 	// TODO finalizer: munmap and release buffer (delete shared file)
 	shared_buffer_unlink(buffer, fd, map_size);
-	sem_close(sem);
-	sem_unlink(SEM_NAME);
+	sem_close(buffer_sem);
+	sem_unlink(buffer_sem_name);
+    sem_close(fill_sem);
+    sem_unlink(fill_sem_name);
+    sem_close(empty_sem);
+    sem_unlink(empty_sem_name);
 
 	// TODO finalizer: print report
 

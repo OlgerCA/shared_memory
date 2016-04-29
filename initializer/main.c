@@ -44,10 +44,24 @@ int main (int argc, char *argv[]) {
         return -1;
     }
 
-    // Creating a new named semaphore.
-    sem_t* semaphore = create_shared_semaphore(shared_semaphore);
-    if(!semaphore){
-        perror("Error creating semaphore");
+    // Creating a new named buffer_sem_name.
+    sem_t* buffer_sem = create_shared_semaphore(buffer_sem_name, 1);
+    if(!buffer_sem){
+        perror("Error creating buffer_sem_name");
+        return -1;
+    }
+
+    // Creating a new named empty_sem_name.
+    sem_t* empty_sem = create_shared_semaphore(empty_sem_name, queue_size - 1);
+    if(!empty_sem){
+        perror("Error creating buffer_sem_name");
+        return -1;
+    }
+
+    // Creating a new named fill_sem_name.
+    sem_t* fill_sem = create_shared_semaphore(fill_sem_name, 0);
+    if(!fill_sem){
+        perror("Error creating buffer_sem_name");
         return -1;
     }
 
@@ -57,25 +71,14 @@ int main (int argc, char *argv[]) {
             ,PROT_EXEC | PROT_READ | PROT_WRITE , MAP_SHARED, fd, 0);
     if (buffer == MAP_FAILED) {
         close(fd);
-        sem_close(semaphore);
-        sem_unlink(shared_semaphore);
+        sem_close(buffer_sem);
+        sem_unlink(buffer_sem_name);
         perror("Error mapping file");
         return -1;
     }
 
     // Initializing buffer.
-    shared_buffer_init(buffer, queue_size, map_size, shared_semaphore);
-
-    //while(1){
-    //    sleep(60);
-    //}
-
-//    // Freeing resources.
-//    munmap(buffer, map_size);
-//    close(fd);
-//    sem_close(semaphore);
-//    // This line should be moved to finalizer process later.
-//    sem_unlink(shared_semaphore);
+    shared_buffer_init(buffer, queue_size, map_size, buffer_sem_name, fill_sem_name, empty_sem_name);
 
     return 0;
 }

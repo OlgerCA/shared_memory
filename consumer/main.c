@@ -31,9 +31,21 @@ int main (int argc, char *argv[])
 
 
     // TODO consumer: get semaphore instance using the provided name inside SharedBuffer
-    sem_t *semaphore = get_shared_semaphore(buffer->__semaphoreName);
+    sem_t *semaphore = get_shared_semaphore(buffer->__buffer_sem_name);
     if(!semaphore){
         perror("Error getting semaphore");
+        return -1;
+    }
+
+    sem_t *fill_sem = get_shared_semaphore(buffer->__fill_sem_name);
+    if(!fill_sem){
+        perror("Error getting buffer_sem");
+        return -1;
+    }
+
+    sem_t *empty_sem = get_shared_semaphore(buffer->__empty_sem_name);
+    if(!empty_sem){
+        perror("Error getting buffer_sem");
         return -1;
     }
 
@@ -43,14 +55,18 @@ int main (int argc, char *argv[])
 
     // TODO consumer: read messages until a termination message is read or p_id % 5 = message_key, using the provided waiting time. Print to the console each time a new message is read.
     while(1){
-        double exp_rnd_wait;
+        printf("sleeping until buffer not empty...\n");
+        clock_t start = clock(), diff;
+        sem_wait(fill_sem);
+        diff = clock() - start;
+        printf("waking up! buffer not empty!\n");
+        semWaitTime += diff;
 
-        if(!buffer->__isActive){
-            break;
-        }
+        double exp_rnd_wait;
 
         Message message = shared_buffer_get_message(buffer, semaphore);
         if(consumerId % 5 == message.key) {
+            sem_post(empty_sem);
             break;
         }
         if(message.key != -1) messagesRead++;
@@ -59,6 +75,8 @@ int main (int argc, char *argv[])
 
         exp_rnd_wait = -log((double)rand() / (double)((unsigned)RAND_MAX + 1)) * mean;
         waitTime += exp_rnd_wait;
+        sem_post(empty_sem);
+        printf("sleeping %lf seconds\n", exp_rnd_wait);
         sleep(exp_rnd_wait);
     }
 

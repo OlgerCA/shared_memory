@@ -71,8 +71,10 @@ SharedBuffer * shared_buffer_get(char *buffer_name){
 }
 
 
-void shared_buffer_init(SharedBuffer* this, int queueSize, size_t bufferSize, char* semaphoreName) {
-    strcpy(this->__semaphoreName, semaphoreName);
+void shared_buffer_init(SharedBuffer* this, int queueSize, size_t bufferSize, char *buffer_sem_name, char *fill_sem_name, char *empty_sem_name) {
+    strcpy(this->__buffer_sem_name, buffer_sem_name);
+    strcpy(this->__fill_sem_name, fill_sem_name);
+    strcpy(this->__empty_sem_name, empty_sem_name);
     this->__backIndex = 0;
     this->__frontIndex = queueSize;
     this->__consumerCount = 0;
@@ -92,7 +94,7 @@ void shared_buffer_init(SharedBuffer* this, int queueSize, size_t bufferSize, ch
 
 /* ---------------------------------------------------------------- */
 char* shared_buffer_get_semaphore_name(SharedBuffer* this) {
-    return this->__semaphoreName;
+    return this->__buffer_sem_name;
 }
 /* ---------------------------------------------------------------- */
 int shared_buffer_get_queue_size(SharedBuffer* this) {
@@ -170,8 +172,6 @@ double shared_buffer_put_message(SharedBuffer* this, Message message, sem_t *sem
     sem_post(semaphore);
     if(successfulMessage)
         printMessageAdded(this, index, message);
-    else
-        printMessageDiscarted(this,message);
 
     return diff;
 }
@@ -239,16 +239,6 @@ void printMessageAdded(SharedBuffer *this, int index, Message message) {
     printf("\tLive Consumers: %d\n", this->__consumerCount);
     printf("\tMessage Info:\n");
     printf("\t\tKey: %d", message.key);
-    printf("\t\tProducer ID: %d", message.producer_id);
-    printf("\t\tDate Time: %s", ctime(&message.dateTime));
-}
-
-//TODO, check is we are actually going to discard a message if it has not been read
-void printMessageDiscarted(SharedBuffer *this,Message message) {
-    printf("Action: Message Dicarted:\n");
-    printf("\tMessage index: %d\n", index);
-    printf("\tLive Producers: %d\n", this->__producerCount);
-    printf("\tLive Consumers: %d\n", this->__consumerCount);
     printf("\t\tProducer ID: %d", message.producer_id);
     printf("\t\tDate Time: %s", ctime(&message.dateTime));
 }
