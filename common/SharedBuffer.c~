@@ -34,7 +34,7 @@ SharedBuffer* shared_buffer_load(int fileDesc, size_t mapSize) {
 	return buffer;
 }
 /* ---------------------------------------------------------------- */
-SharedBuffer* shared_buffer_get(char *buffer_name){
+SharedBuffer * shared_buffer_get(char *buffer_name){
 	int fd = open(buffer_name, O_RDWR, (mode_t)0600);
 	if (fd == -1) {
 		perror("Error opening file for writing");
@@ -214,7 +214,7 @@ bool shared_buffer_is_active(SharedBuffer *this) {
 	return this->__isActive;
 }
 /* ---------------------------------------------------------------- */
-void printMessageAdded(SharedBuffer* this, int index, Message message) {
+void printMessageAdded(SharedBuffer *this, int index, Message message) {
 	printf("Action: New Message added:\n");
 	printf("\tMessage index: %d\n", index);
 	printf("\tLive Producers: %d\n", this->__producerCount);
@@ -225,7 +225,7 @@ void printMessageAdded(SharedBuffer* this, int index, Message message) {
 	printf("\t\tDate Time: %s", ctime(&message.dateTime));
 }
 /* ---------------------------------------------------------------- */
-void printMessageRead(SharedBuffer* this, int index, Message message) {
+void printMessageRead(SharedBuffer *this, int index, Message message) {
 	printf("Action: Read Message:\n");
 	printf("\tMessage index: %d\n", index);
 	printf("\tLive Producers: %d\n", this->__producerCount);
@@ -235,3 +235,4 @@ void printMessageRead(SharedBuffer* this, int index, Message message) {
 	printf("\t\tProducer ID: %d", message.producer_id);
 	printf("\t\tDate Time: %s", ctime(&message.dateTime));
 }
+
