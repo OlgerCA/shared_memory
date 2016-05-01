@@ -85,11 +85,10 @@ int main (int argc, char *argv[])
 
     // TODO consumer: print report
     printf("Consumer Summary:\n");
-    printf("\tConsumer ID:%d\n", consumerId);
+    printf("\tConsumer ID: %d\n", consumerId);
     printf("\tTotal reads: %d\n", messagesRead);
-    printf("\tAccum wait time:%lf\n", waitTime);
-    printf("\tAccum wait time blocked:%lf\n", semWaitTime);
-    printf("\tetc...");
+    printf("\tAccum wait time: %lf\n", waitTime);
+    printf("\tAccum wait time blocked: %lf\n", semWaitTime);
 
     return 0;
 }

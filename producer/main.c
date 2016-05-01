@@ -95,11 +95,10 @@ int main (int argc, char *argv[])
 
     // TODO producer: print report
     printf("Producer Summary:\n");
-    printf("\tProducer ID:%d\n", producerId);
+    printf("\tProducer ID: %d\n", producerId);
     printf("\tMessages produced: %d\n", messagesProduced);
-    printf("\tAccum wait time:%lf\n", waitTime);
-    printf("\tAccum wait time blocked:%lf\n", semWaitTime);
-    printf("\tetc...");
+    printf("\tAccum wait time: %lf\n", waitTime);
+    printf("\tAccum wait time blocked: %lf\n", semWaitTime);
 
     return 0;
 }
