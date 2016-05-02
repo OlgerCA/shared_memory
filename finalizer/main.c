@@ -113,7 +113,7 @@ int main (int argc, char* argv[]) {
 	// TODO finalizer: print report
 	printf("Finalizer Summary:\n");
 	printf("\tTotal messages produced: %d\n", buffer->__messageCount);
-	printf("\tTotal messages readed: %d\n", buffer->__readCount);
+	printf("\tTotal messages read: %d\n", buffer->__readCount);
 	
 	// TODO finalizer: munmap and release buffer (delete shared file)
 	shared_buffer_unlink(buffer, fd, map_size);
